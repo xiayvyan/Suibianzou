@@ -190,6 +190,19 @@
         for (TagModel *model in self.tagArray) {
             [self createTagView:model withDistance:model.distance];
         }
+        
+        // 判断两个坐标是有没有重和部分，有的话移除其中一个（这里移除了后一个）
+        for (int i = 0; i < self.tagArray.count - 1; i++) {
+            UIView *view0 = ((TagModel *)self.tagArray[i]).azimuthView;
+            for (int j = i + 1; j < self.tagArray.count; j++) {
+                UIView *view1 = ((TagModel *)self.tagArray[j]).azimuthView;
+                if (CGRectIntersectsRect(view0.frame, view1.frame)) {
+                    [((TagModel *)self.tagArray[j]).tagView removeFromSuperview];
+                    [((TagModel *)self.tagArray[j]).azimuthView removeFromSuperview];
+                    [self.tagArray removeObjectAtIndex:j];
+                }
+            }
+        }
     }
 }
 
